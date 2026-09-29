@@ -1,0 +1,46 @@
+// Hand Gesture LED Controller
+// ESP32
+
+const int leds[] = {
+  13,  // LED 1
+  14,  // LED 2
+  16,  // LED 3
+  17,  // LED 4
+  18   // LED 5
+};
+
+const int NUM_LEDS = 5;
+
+void setup() {
+  Serial.begin(115200);
+
+  for (int i = 0; i < NUM_LEDS; i++) {
+    pinMode(leds[i], OUTPUT);
+    digitalWrite(leds[i], LOW);
+  }
+
+  Serial.println("ESP32 Ready");
+}
+
+void loop() {
+
+  if (Serial.available()) {
+
+    int fingers = Serial.parseInt();
+
+    // Make sure value stays between 0 and 5
+    fingers = constrain(fingers, 0, 5);
+
+    // Turn ON required number of LEDs
+    for (int i = 0; i < NUM_LEDS; i++) {
+
+      if (i < fingers)
+        digitalWrite(leds[i], HIGH);
+      else
+        digitalWrite(leds[i], LOW);
+    }
+
+    Serial.print("Fingers detected: ");
+    Serial.println(fingers);
+  }
+}
